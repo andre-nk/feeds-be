@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+    feeds:
+        container_name: 'feeds'
+        image: postgres:latest
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_PASSWORD: workers
+            POSTGRES_USER: andrenk
+            POSTGRES_DB: feeds-restful
+
