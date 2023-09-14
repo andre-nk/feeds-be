@@ -3,11 +3,14 @@ package id.workers.feeds.service.impl
 import id.workers.feeds.entity.Note
 import id.workers.feeds.model.CreateNoteRequest
 import id.workers.feeds.model.NoteResponse
+import id.workers.feeds.model.PaginatedNoteResponse
 import id.workers.feeds.model.UpdateNoteRequest
 import id.workers.feeds.repository.NoteRepository
 import id.workers.feeds.service.NoteService
 import id.workers.feeds.validation.ValidationUtil
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
+
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
@@ -55,6 +58,18 @@ class NoteServiceImpl(val noteRepository: NoteRepository, val validationUtil: Va
     override fun deleteNote(id: String) {
         findNoteById(id)
         noteRepository.deleteById(id)
+    }
+
+    override fun getNotes(pageable: Pageable): PaginatedNoteResponse {
+        val notes = noteRepository.findAll(pageable)
+
+        return PaginatedNoteResponse(
+            data = notes.content.map {
+                noteToResponse(it)
+            },
+            total = notes.totalElements,
+            currentPage = notes.number,
+        )
     }
 
     private fun findNoteById(id : String) : Note {
