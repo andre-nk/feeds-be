@@ -9,6 +9,7 @@ import id.workers.feeds.repository.NoteRepository
 import id.workers.feeds.service.NoteService
 import id.workers.feeds.validation.ValidationUtil
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
+import org.springframework.data.domain.Page
 
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -60,8 +61,12 @@ class NoteServiceImpl(val noteRepository: NoteRepository, val validationUtil: Va
         noteRepository.deleteById(id)
     }
 
-    override fun getNotes(pageable: Pageable): PaginatedNoteResponse {
-        val notes = noteRepository.findAll(pageable)
+    override fun getNotes(searchQuery: String?, pageable: Pageable): PaginatedNoteResponse {
+        val notes : Page<Note> = if(searchQuery !== null){
+            noteRepository.search(searchQuery, pageable)
+        } else {
+            noteRepository.findAll(pageable)
+        }
 
         return PaginatedNoteResponse(
             data = notes.content.map {

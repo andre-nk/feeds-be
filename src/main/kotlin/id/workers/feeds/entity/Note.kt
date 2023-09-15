@@ -7,7 +7,7 @@ import jakarta.persistence.Table
 import java.util.*
 
 @Entity
-@Table(name = "notes")
+@Table(name = "notes", schema = "public")
 data class Note (
     @Id
     val id: String,

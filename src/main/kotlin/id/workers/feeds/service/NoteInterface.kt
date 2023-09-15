@@ -17,7 +17,7 @@ interface NoteService {
 
     fun deleteNote(id : String)
 
-    fun getNotes(pageable: Pageable) : PaginatedNoteResponse
+    fun getNotes(searchQuery: String?, pageable: Pageable) : PaginatedNoteResponse
 }
 
 

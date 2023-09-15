@@ -20,7 +20,7 @@ class NoteController(val noteService: NoteService) {
         produces = ["application/json"],
         consumes = ["application/json"]
     )
-    fun createNote(@RequestBody body : CreateNoteRequest) : GenericResponse<NoteResponse>{
+    fun createNote(@RequestBody body: CreateNoteRequest): GenericResponse<NoteResponse> {
         val noteResponse = noteService.createNote(body)
 
         return GenericResponse(
@@ -34,7 +34,7 @@ class NoteController(val noteService: NoteService) {
         value = ["/api/notes/{noteId}"],
         produces = ["application/json"]
     )
-    fun getNote(@PathVariable("noteId") id : String) : GenericResponse<NoteResponse>{
+    fun getNote(@PathVariable("noteId") id: String): GenericResponse<NoteResponse> {
         val noteResponse = noteService.getNote(id)
 
         return GenericResponse(
@@ -48,8 +48,11 @@ class NoteController(val noteService: NoteService) {
         value = ["/api/notes"],
         produces = ["application/json"]
     )
-    fun getNotes(@RequestParam("page", defaultValue = "1") page : Int) : GenericResponse<PaginatedNoteResponse>{
-        val paginatedNoteResponse = noteService.getNotes(PageRequest.of(page - 1, 5))
+    fun getNotes(
+        @RequestParam("page", defaultValue = "1") page: Int,
+        @RequestParam("search", required = false) searchQuery: String? = null
+    ): GenericResponse<PaginatedNoteResponse> {
+        val paginatedNoteResponse = noteService.getNotes(searchQuery, PageRequest.of(page - 1, 5))
 
         return GenericResponse(
             code = 200,
@@ -63,7 +66,10 @@ class NoteController(val noteService: NoteService) {
         consumes = ["application/json"],
         produces = ["application/json"]
     )
-    fun updateNote(@PathVariable("noteId") id :String, @RequestBody body : UpdateNoteRequest) : GenericResponse<NoteResponse>{
+    fun updateNote(
+        @PathVariable("noteId") id: String,
+        @RequestBody body: UpdateNoteRequest
+    ): GenericResponse<NoteResponse> {
         val noteResponse = noteService.updateNote(id, body)
 
         return GenericResponse(
@@ -76,7 +82,7 @@ class NoteController(val noteService: NoteService) {
     @DeleteMapping(
         value = ["/api/notes/{noteId}"]
     )
-    fun deleteNote(@PathVariable("noteId") id : String) : GenericResponse<String>{
+    fun deleteNote(@PathVariable("noteId") id: String): GenericResponse<String> {
         noteService.deleteNote(id)
 
         return GenericResponse(
